@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    /* --- COLORS --- */
+    /* Kita map variable CSS native (var(--primary)) ke nama class utility Tailwind */
+    
+    --color-primary: var(--primary);
+    --color-secondary: var(--secondary);
+
+    --color-dark-900: #0f1016;
+    --color-dark-800: #1a1c26;
+    --color-dark-700: #26293b;
+
+    /* --- FONTS --- */
+    /* Override font-sans bawaan dan buat font-heading baru */
+    
+    --font-heading: "Russo One", sans-serif;
+    --font-sans: "Inter", sans-serif;
+
+    /* --- ANIMATIONS --- */
+    
+    --animate-float: float 6s ease-in-out infinite;
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+}
+
+@utility text-glow {
+    text-shadow: 0 0 12px rgba(217, 119, 6, 0.2);
+}
