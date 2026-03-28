@@ -64,6 +64,7 @@ class RankResource extends Resource
                                 Forms\Components\FileUpload::make('image')
                                     ->label('Icon Rank')
                                     ->image()
+                                    ->preserveFilenames()
                                     ->disk('public_img')
                                     ->directory('ranks')
                                     ->columnSpanFull(),
@@ -73,11 +74,11 @@ class RankResource extends Resource
                                     ->default(true)
                                     ->required(),
                             ]),
-
+ 
                         // TAB 2: FITUR / COMMANDS (JSON)
                         Tab::make('Fitur & Akses')
                             ->icon('heroicon-m-list-bullet')
-                            ->badge(fn ($record) => $record?->description ? count($record->description) : null)
+                            ->badge(fn($record) => $record?->description ? count($record->description) : null)
                             ->schema([
                                 Forms\Components\Repeater::make('description')
                                     ->label('List Keuntungan')
@@ -95,7 +96,7 @@ class RankResource extends Resource
                         // TAB 3: BONUS KITS (JSON BARU)
                         Tab::make('Bonus Kits')
                             ->icon('heroicon-m-gift') // Ikon Kado
-                            ->badge(fn ($record) => $record?->kits ? count($record->kits) : null)
+                            ->badge(fn($record) => $record?->kits ? count($record->kits) : null)
                             ->schema([
                                 Forms\Components\Repeater::make('kits')
                                     ->label('Item In-Game / Kits')
@@ -136,7 +137,7 @@ class RankResource extends Resource
                     ->label('Harga')
                     ->money('IDR', locale: 'id')
                     ->description(
-                        fn (Rank $record): ?string => $record->slice_price ? 'Diskon dari: Rp '.number_format($record->slice_price, 0, ',', '.') : null
+                        fn(Rank $record): ?string => $record->slice_price ? 'Diskon dari: Rp ' . number_format($record->slice_price, 0, ',', '.') : null
                     )
                     ->sortable(),
 

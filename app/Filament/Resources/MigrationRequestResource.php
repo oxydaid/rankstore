@@ -184,7 +184,7 @@ class MigrationRequestResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -204,9 +204,9 @@ class MigrationRequestResource extends Resource
     {
         return [
             'index' => Pages\ListMigrationRequests::route('/'),
-            'create' => Pages\CreateMigrationRequest::route('/create'),
             'view' => Pages\ViewMigrationRequest::route('/{record}'),
-            'edit' => Pages\EditMigrationRequest::route('/{record}/edit'),
+            // 'create' => Pages\CreateMigrationRequest::route('/create'),
+            // 'edit' => Pages\EditMigrationRequest::route('/{record}/edit'),
         ];
     }
 

@@ -53,6 +53,8 @@ class PaymentMethodResource extends Resource
 
                         Forms\Components\FileUpload::make('logo')
                             ->image()
+                            ->label('Logo Metode Pembayaran')
+                            ->preserveFilenames()
                             ->disk('public_img')
                             ->directory('payment-methods')
                             ->columnSpanFull(),

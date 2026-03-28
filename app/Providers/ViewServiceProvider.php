@@ -20,13 +20,13 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('components.layouts.app', function ($view) {
             $settings = null;
 
-            // Cek Database (Aman dari error migrate fresh)
-            if (Schema::hasTable('app_settings')) {
-                try {
+            try {
+                // Cek Database (Aman dari error migrate fresh dan koneksi database putus)
+                if (Schema::hasTable('app_settings')) {
                     $settings = AppSetting::first();
-                } catch (\Exception $e) {
-                    // Ignore error
                 }
+            } catch (\Exception $e) {
+                // Ignore error, $settings will be null
             }
 
             // Siapkan variable siap pakai (Logic dipindah ke sini)

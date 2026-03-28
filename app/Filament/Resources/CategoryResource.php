@@ -50,6 +50,7 @@ class CategoryResource extends Resource
                 Forms\Components\FileUpload::make('image')
                     ->label('Cover Image')
                     ->image()
+                    ->preserveFilenames()
                     ->disk('public_img')
                     ->directory('categories'),
 

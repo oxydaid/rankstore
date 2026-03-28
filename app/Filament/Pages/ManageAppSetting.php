@@ -56,12 +56,14 @@ class ManageAppSetting extends Page implements HasForms
                         FileUpload::make('logo')
                             ->image()
                             ->disk('public_img')
+                            ->getUploadedFileNameForStorageUsing(fn($file) => 'logo.' . $file->getClientOriginalExtension())
                             ->directory('settings'),
                         FileUpload::make('favicon')
                             ->image()
                             ->disk('public_img')
                             ->directory('settings')
-                            ->imageCropAspectRatio('1:1'),
+                            ->imageCropAspectRatio('1:1')
+                            ->getUploadedFileNameForStorageUsing(fn($file) => 'favicon.' . $file->getClientOriginalExtension()),
                     ])
                     ->columns(2),
 
@@ -106,7 +108,7 @@ class ManageAppSetting extends Page implements HasForms
                         TextInput::make('license_code')
                             ->label('License Code')
                             ->password()
-                            ->disabled(fn ($get) => strtolower((string) ($get('license_status') ?? '')) === 'active')
+                            ->disabled(fn($get) => strtolower((string) ($get('license_status') ?? '')) === 'active')
                             ->dehydrated()
                             ->revealable()
                             ->required(),
@@ -118,7 +120,7 @@ class ManageAppSetting extends Page implements HasForms
                             ->helperText('Jika kosong, sistem akan memakai MAYAR_PRODUCT_ID dari file env.'),
                         Placeholder::make('license_status')
                             ->label('Status Lisensi')
-                            ->content(fn ($get) => strtoupper((string) ($get('license_status') ?? 'INACTIVE'))),
+                            ->content(fn($get) => strtoupper((string) ($get('license_status') ?? 'INACTIVE'))),
                     ])
                     ->columns(2),
 
@@ -140,6 +142,7 @@ class ManageAppSetting extends Page implements HasForms
                                 'Gambar QRIS. Format: JPG/PNG. Max: 2MB. QRIS Manual.'
                             )
                             ->image()
+                            ->getUploadedFileNameForStorageUsing(fn($file) => 'qris.' . $file->getClientOriginalExtension())
                             ->disk('public_img')
                             ->directory('settings')
                             ->imageCropAspectRatio('1:1')
@@ -220,17 +223,17 @@ class ManageAppSetting extends Page implements HasForms
                         Forms\Components\Placeholder::make('preview')
                             ->label('Preview Gradient')
                             ->content(
-                                fn ($get) => new \Illuminate\Support\HtmlString(
+                                fn($get) => new \Illuminate\Support\HtmlString(
                                     '
                 <div style="
                     width: 100%; 
                     height: 50px; 
                     border-radius: 8px; 
-                    background: linear-gradient(to right, '.
-                                        ($get('primary_color') ?? '#333').
-                                        ', '.
-                                        ($get('secondary_color') ?? '#333').
-                                        ');
+                    background: linear-gradient(to right, ' .
+                                    ($get('primary_color') ?? '#333') .
+                                    ', ' .
+                                    ($get('secondary_color') ?? '#333') .
+                                    ');
                     display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
                 ">
                     Tampilan Header Nanti
@@ -255,8 +258,8 @@ class ManageAppSetting extends Page implements HasForms
 
             if (strtolower((string) $settings->license_status) !== 'active') {
                 $result = app(MayarLicenseService::class)->validateForSettings($settings, true);
-                
-                if (! ($result['active'] ?? false)) {
+
+                if (!($result['active'] ?? false)) {
                     $this->form->fill($settings->fresh()->toArray());
                     Notification::make()
                         ->danger()

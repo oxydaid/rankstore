@@ -15,4 +15,17 @@ class PaymentMethod extends Model
     {
         return $this->hasMany(Order::class);
     }
+
+    // Hapus file lama saat update logo
+    protected static function booted()
+    {
+        static::updating(function ($paymentMethod) {
+            if ($paymentMethod->isDirty('logo')) {
+                $oldLogo = $paymentMethod->getOriginal('logo');
+                if ($oldLogo && \Storage::disk('public_img')->exists($oldLogo)) {
+                    \Storage::disk('public_img')->delete($oldLogo);
+                }
+            }
+        });
+    }
 }
