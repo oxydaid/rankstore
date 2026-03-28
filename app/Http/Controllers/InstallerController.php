@@ -282,7 +282,7 @@ class InstallerController extends Controller
         return $this->renderStep('finish', []);
     }
 
-    public function complete(Request $request): RedirectResponse
+    public function complete(Request $request): View|RedirectResponse
     {
         if ($this->alreadyInstalled()) {
             return redirect('/');
@@ -325,7 +325,9 @@ class InstallerController extends Controller
             'installer.admin-user',
         ]);
 
-        return redirect('/admin/login')->with('success', 'Instalasi selesai. Silakan login sebagai admin.');
+        return view('installer.wizard', [
+            'step' => 'success'
+        ]);
     }
 
     protected function renderStep(string $step, array $data): View
@@ -455,5 +457,8 @@ class InstallerController extends Controller
         // Keep runtime stores file-based while installer may recreate DB tables.
         Config::set('session.driver', 'file');
         Config::set('cache.default', 'file');
+
+        DB::purge($connection);
+        DB::purge();
     }
 }

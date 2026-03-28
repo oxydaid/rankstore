@@ -101,15 +101,19 @@ class ManageAppSetting extends Page implements HasForms
                     ->columns(2),
 
                 Section::make('Lisensi Aplikasi')
-                    ->description('Validasi lisensi menggunakan provider Mayar.')
+                    ->description('Tidak bisa diubah.')
                     ->schema([
                         TextInput::make('license_code')
                             ->label('License Code')
                             ->password()
+                            ->disabled(fn ($get) => strtolower((string) ($get('license_status') ?? '')) === 'active')
+                            ->dehydrated()
                             ->revealable()
                             ->required(),
                         TextInput::make('mayar_product_id')
                             ->label('Mayar Product ID')
+                            ->disabled()
+                            ->dehydrated()
                             ->required()
                             ->helperText('Jika kosong, sistem akan memakai MAYAR_PRODUCT_ID dari file env.'),
                         Placeholder::make('license_status')
@@ -249,22 +253,26 @@ class ManageAppSetting extends Page implements HasForms
             $settings = AppSetting::first();
             $settings->update($data);
 
-            $result = app(MayarLicenseService::class)->validateForSettings($settings, true);
-            $this->form->fill($settings->fresh()->toArray());
+            if (strtolower((string) $settings->license_status) !== 'active') {
+                $result = app(MayarLicenseService::class)->validateForSettings($settings, true);
+                
+                if (! ($result['active'] ?? false)) {
+                    $this->form->fill($settings->fresh()->toArray());
+                    Notification::make()
+                        ->danger()
+                        ->title('Lisensi tidak valid')
+                        ->body($result['message'] ?? 'Lisensi tidak aktif.')
+                        ->send();
 
-            if (! ($result['active'] ?? false)) {
-                Notification::make()
-                    ->danger()
-                    ->title('Lisensi tidak valid')
-                    ->body($result['message'] ?? 'Lisensi tidak aktif.')
-                    ->send();
-
-                return;
+                    return;
+                }
             }
+
+            $this->form->fill($settings->fresh()->toArray());
 
             Notification::make()
                 ->success()
-                ->title('Pengaturan berhasil disimpan dan lisensi aktif')
+                ->title('Pengaturan berhasil disimpan')
                 ->send();
         } catch (Halt $exception) {
             return;

@@ -381,6 +381,18 @@
                     </div>
                 </form>
             @endif
+
+            @if ($step === 'success')
+                <div class="alert alert-success">
+                    <strong>Instalasi Berhasil!</strong><br>
+                    Website Anda sedang dimuat. Mohon tunggu beberapa detik (mengalihkan otomatis)...
+                    <script>
+                        setTimeout(function() {
+                            window.location.href = "{{ route('home') }}";
+                        }, 2500);
+                    </script>
+                </div>
+            @endif
         </section>
     </main>
 </body>

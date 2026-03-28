@@ -30,11 +30,9 @@ class EnsureValidLicense
             ], 403);
         }
 
-        $result = $this->licenseService->validateForSettings($settings);
-
-        if (! ($result['active'] ?? false)) {
+        if (strtolower((string) $settings->license_status) !== 'active') {
             return response()->view('errors.invalid-license', [
-                'reason' => $result['message'] ?? 'Lisensi tidak valid atau belum diaktifkan.',
+                'reason' => 'Lisensi tidak valid atau belum diaktifkan.',
             ], 403);
         }
 
